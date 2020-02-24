@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Block.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameSegment.gd" type="Script" id=3]
+
+[sub_resource type="SegmentShape2D" id=1]
+b = Vector2( 0, 1800 )
+
+[sub_resource type="SegmentShape2D" id=2]
+a = Vector2( 512, 0 )
+b = Vector2( 512, 1800 )
+
+[node name="GameSegment" type="Node2D"]
+script = ExtResource( 3 )
+Block = ExtResource( 1 )
+input = {
+"left": "rightsegment_left",
+"right": "rightsegment_right"
+}
+
+[node name="Background" type="Sprite" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+margin_right = 512.0
+margin_bottom = 1600.0
+color = Color( 0.278431, 0.278431, 0.278431, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+_size = Vector2( 100, 100 )
+speed = Vector2( 1000, 300 )
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource( 1 )
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource( 2 )

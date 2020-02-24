@@ -1,0 +1,130 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://GameSegment.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Main.gd" type="Script" id=2]
+[ext_resource path="res://Xolonium-Regular.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 80
+font_data = ExtResource( 3 )
+
+[sub_resource type="InputEventAction" id=5]
+action = "leftsegment_left"
+
+[sub_resource type="ShortCut" id=6]
+shortcut = SubResource( 5 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 80
+font_data = ExtResource( 3 )
+
+[sub_resource type="InputEventAction" id=7]
+action = "leftsegment_right"
+
+[sub_resource type="ShortCut" id=8]
+shortcut = SubResource( 7 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 100
+font_data = ExtResource( 3 )
+
+[sub_resource type="InputEventAction" id=9]
+action = "rightsegment_left"
+
+[sub_resource type="ShortCut" id=10]
+shortcut = SubResource( 9 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 100
+font_data = ExtResource( 3 )
+
+[sub_resource type="InputEventAction" id=11]
+action = "rightsegment_right"
+
+[sub_resource type="ShortCut" id=12]
+shortcut = SubResource( 11 )
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="LeftSegment" parent="." instance=ExtResource( 1 )]
+position = Vector2( 16, 0 )
+input = {
+"left": "leftsegment_left",
+"right": "leftsegment_right"
+}
+
+[node name="RightSegment" parent="." instance=ExtResource( 1 )]
+position = Vector2( 552, 0 )
+input = {
+"left": "rightsegment_left",
+"right": "rightsegment_right"
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_top = 1600.0
+margin_right = 1080.0
+margin_bottom = 1920.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftLeft" type="Button" parent="."]
+margin_left = 40.0
+margin_top = 1624.0
+margin_right = 256.0
+margin_bottom = 1760.0
+custom_fonts/font = SubResource( 1 )
+shortcut_in_tooltip = false
+action_mode = 0
+shortcut = SubResource( 6 )
+text = "A"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftRight" type="Button" parent="."]
+margin_left = 288.0
+margin_top = 1624.0
+margin_right = 504.0
+margin_bottom = 1760.0
+custom_fonts/font = SubResource( 2 )
+action_mode = 0
+shortcut = SubResource( 8 )
+text = "D"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RightLeft" type="Button" parent="."]
+margin_left = 576.0
+margin_top = 1624.0
+margin_right = 792.0
+margin_bottom = 1760.0
+custom_fonts/font = SubResource( 3 )
+action_mode = 0
+shortcut = SubResource( 10 )
+text = "←"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RightRigth" type="Button" parent="."]
+margin_left = 824.0
+margin_top = 1624.0
+margin_right = 1040.0
+margin_bottom = 1760.0
+custom_fonts/font = SubResource( 4 )
+action_mode = 0
+shortcut = SubResource( 12 )
+text = "→"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="game_over" from="LeftSegment" to="." method="_on_game_over"]
+[connection signal="game_over" from="RightSegment" to="." method="_on_game_over"]
+[connection signal="button_down" from="LeftLeft" to="." method="_on_input_button_down" binds= [ "leftsegment_left" ]]
+[connection signal="button_down" from="LeftRight" to="." method="_on_input_button_down" binds= [ "leftsegment_right" ]]
+[connection signal="button_down" from="RightLeft" to="." method="_on_input_button_down" binds= [ "rightsegment_left" ]]
+[connection signal="button_down" from="RightRigth" to="." method="_on_input_button_down" binds= [ "rightsegment_right" ]]
