@@ -4,13 +4,12 @@ export (PackedScene) var Block
 
 signal game_over
 
-export var block_speed := 800.0
 export var input := {"left": "", "right": ""}
 
 var size = Vector2(512.0, 1600.0)
 var lane_pos_x := [0.0, 0.0]
 var player_spawn_pos: Vector2
-var neutral_pos = size.y / 2
+var neutral_pos = size.y / 2 - 200
 
 # For spawning blocks V V V
 var block = []
@@ -19,11 +18,16 @@ var block_length = [200.0, 512.0]
 var last_block :int
 var spawn_path = 0 # 0-1
 
+export var block_speed_min := 800.0 # Start speed
+export var block_speed_max := 1500.0
+export var block_speed_inc := 0.01
+var block_speed := 0.0
 
 func _enter_tree():
 	calculate_lane_pos_x()
 	player_spawn_pos = Vector2(lane_pos_x[0], neutral_pos)
-	$Player.set_position(player_spawn_pos)
+	
+	reset()
 
 
 func _physics_process(delta: float):
@@ -38,13 +42,15 @@ func _physics_process(delta: float):
 		# When player is below 'neutral_pos'
 		move_player_up(delta)
 		
+		# Fixes the problem with collision detection when two objects move to each other in the same frame using move_and_collide
+		collision_fix()
+		
 		if $Player.get_flag("changing_lane"):
 			player_lane_changing(delta)
 		else:
 			player_input()
 		
-		# Fixes the problem with collision detection when two objects move to each other in the same frame using move_and_collide
-		collision_fix()
+		difficulty_scaling(delta)
 		
 		blocks_deletion()
 		
@@ -87,6 +93,8 @@ func move_blocks(delta: float):
 # and if is not being pushed by a block
 func move_player_up(delta: float):
 	if not $Player.get_flag("being_pushed") && $Player.get_position().y > neutral_pos:
+		# speed is lower the closer the player is to the neutral_pos
+		$Player.speed.y = lerp(10.0, $Player.speed_max_y, ($Player/Body.position.y - neutral_pos) / (size.y - neutral_pos))
 		$Player/Body.move_and_collide(Vector2(0.0, -1.0) * $Player.speed.y * delta)
 		
 		if $Player.get_position().y < neutral_pos:
@@ -139,6 +147,12 @@ func player_lane_changing(delta: float):
 				$Player.set_direction(0)
 
 
+func difficulty_scaling(delta: float):
+	# Block speed
+	if block_speed_max - block_speed > 0.1:
+		block_speed = lerp(block_speed, block_speed_max, block_speed_inc * delta)
+
+
 func blocks_deletion():
 	for i in block.size():
 		if block[i] != null && is_out_bottom(block[i].get_top_pos()):
@@ -167,6 +181,8 @@ func reset():
 			block[i].queue_free()
 			block[i] = null
 	block = []
+	
+	block_speed = block_speed_min
 	
 	# Move player to start pos
 	spawn_path = 0

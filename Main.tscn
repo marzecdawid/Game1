@@ -8,33 +8,33 @@
 size = 80
 font_data = ExtResource( 3 )
 
-[sub_resource type="InputEventAction" id=5]
+[sub_resource type="InputEventAction" id=2]
 action = "leftsegment_left"
+
+[sub_resource type="ShortCut" id=3]
+shortcut = SubResource( 2 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 80
+font_data = ExtResource( 3 )
+
+[sub_resource type="InputEventAction" id=5]
+action = "leftsegment_right"
 
 [sub_resource type="ShortCut" id=6]
 shortcut = SubResource( 5 )
 
-[sub_resource type="DynamicFont" id=2]
-size = 80
-font_data = ExtResource( 3 )
-
-[sub_resource type="InputEventAction" id=7]
-action = "leftsegment_right"
-
-[sub_resource type="ShortCut" id=8]
-shortcut = SubResource( 7 )
-
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=7]
 size = 100
 font_data = ExtResource( 3 )
 
-[sub_resource type="InputEventAction" id=9]
+[sub_resource type="InputEventAction" id=8]
 action = "rightsegment_left"
 
-[sub_resource type="ShortCut" id=10]
-shortcut = SubResource( 9 )
+[sub_resource type="ShortCut" id=9]
+shortcut = SubResource( 8 )
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=10]
 size = 100
 font_data = ExtResource( 3 )
 
@@ -78,7 +78,7 @@ margin_bottom = 1760.0
 custom_fonts/font = SubResource( 1 )
 shortcut_in_tooltip = false
 action_mode = 0
-shortcut = SubResource( 6 )
+shortcut = SubResource( 3 )
 text = "A"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -89,9 +89,10 @@ margin_left = 288.0
 margin_top = 1624.0
 margin_right = 504.0
 margin_bottom = 1760.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
+shortcut_in_tooltip = false
 action_mode = 0
-shortcut = SubResource( 8 )
+shortcut = SubResource( 6 )
 text = "D"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -102,9 +103,10 @@ margin_left = 576.0
 margin_top = 1624.0
 margin_right = 792.0
 margin_bottom = 1760.0
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 7 )
+shortcut_in_tooltip = false
 action_mode = 0
-shortcut = SubResource( 10 )
+shortcut = SubResource( 9 )
 text = "←"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -115,7 +117,8 @@ margin_left = 824.0
 margin_top = 1624.0
 margin_right = 1040.0
 margin_bottom = 1760.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 10 )
+shortcut_in_tooltip = false
 action_mode = 0
 shortcut = SubResource( 12 )
 text = "→"

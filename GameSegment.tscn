@@ -31,7 +31,7 @@ __meta__ = {
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 _size = Vector2( 100, 100 )
-speed = Vector2( 1000, 300 )
+speed = Vector2( 1000, 0 )
 
 [node name="LeftWall" type="StaticBody2D" parent="."]
 collision_layer = 4
