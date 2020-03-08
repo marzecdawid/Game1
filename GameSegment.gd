@@ -94,7 +94,7 @@ func move_blocks(delta: float):
 func move_player_up(delta: float):
 	if not $Player.get_flag("being_pushed") && $Player.get_position().y > neutral_pos:
 		# speed is lower the closer the player is to the neutral_pos
-		$Player.speed.y = lerp(10.0, $Player.speed_max_y, ($Player/Body.position.y - neutral_pos) / (size.y - neutral_pos))
+		$Player.speed.y = lerp(10.0, $Player.speed_y_max, ($Player/Body.position.y - neutral_pos) / (size.y - neutral_pos))
 		$Player/Body.move_and_collide(Vector2(0.0, -1.0) * $Player.speed.y * delta)
 		
 		if $Player.get_position().y < neutral_pos:
@@ -128,23 +128,39 @@ func spawn_block(distance: float):
 
 
 func player_lane_changing(delta: float):
+	# Set x speed
+	if $Player.get_flag("slowed"):
+		var weight: float = ($Player.get_position().x - lane_pos_x[$Player.target_lane]) / ($Player.hit_pos - lane_pos_x[$Player.target_lane])
+		$Player.speed.x = lerp($Player.speed_x_slow, 10.0, weight)
+		$Player/Sprite/Sprite.modulate = Color(1, 1, 1, weight) # temporary here
+	else:
+		$Player.speed.x = $Player.speed_x_fast
+	
 	var collision = $Player/Body.move_and_collide(Vector2($Player.get_direction(), 0) * $Player.speed.x * delta)
+	
 	# Change direction after hitting a block or a wall
 	if collision:
+		$Player.hit_pos = $Player.get_position().x
+		$Player.set_flag("slowed", true)
+		
 		$Player/Body.position += -collision.remainder
 		$Player.set_direction(-$Player.get_direction())
 	
 	# Check if player is moving to other lane, not a wall, and stop player when reach correct pos
 	var pt_lane :int = $Player.target_lane
 	if pt_lane >= 0 and pt_lane < lane_pos_x.size():
+		var btmp = false
 		if $Player.get_direction() == 1:
 			if $Player.get_position().x >= lane_pos_x[pt_lane]:
-				$Player.set_position(Vector2(lane_pos_x[pt_lane], $Player.get_position().y))
-				$Player.set_direction(0)
+				btmp = true
 		elif $Player.get_direction() == -1:
 			if $Player.get_position().x <= lane_pos_x[pt_lane]:
-				$Player.set_position(Vector2(lane_pos_x[pt_lane], $Player.get_position().y))
-				$Player.set_direction(0)
+				btmp = true
+		if btmp:
+			$Player.set_position(Vector2(lane_pos_x[pt_lane], $Player.get_position().y))
+			$Player.set_direction(0)
+			$Player.set_flag("slowed", false)
+			$Player/Sprite/Sprite.modulate = Color(1, 1, 1, 0) # temporary here
 
 
 func difficulty_scaling(delta: float):
@@ -183,6 +199,9 @@ func reset():
 	block = []
 	
 	block_speed = block_speed_min
+	$Player.speed.x = $Player.speed_x_fast
+	$Player.set_flag("slowed", false)
+	$Player/Sprite/Sprite.modulate = Color(1, 1, 1, 0) # temporary here
 	
 	# Move player to start pos
 	spawn_path = 0

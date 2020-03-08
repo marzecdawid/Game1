@@ -2,13 +2,17 @@ extends Node2D
 
 
 export var _size: Vector2 = Vector2(200.0, 200.0) setget set_size, get_size
-export var speed := Vector2(500.0, 0.0)
-export var speed_max_y := 800.0
+export var speed_x_slow := 600.0
+export var speed_x_fast := 1200.0
+export var speed_y_max := 800.0
+var speed := Vector2(speed_x_fast, 0.0)
 var _direction :int = 0 setget set_direction, get_direction
 var target_lane := 0# setget set_target_lane, get_target_lane
+var hit_pos := 0.0
 
 var flag := {"being_pushed": false, 
-		"changing_lane": false}
+		"changing_lane": false,
+		"slowed": false}
 
 var rect: Rect2
 

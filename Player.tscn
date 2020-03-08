@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://border.png" type="Texture" id=2]
+[ext_resource path="res://player.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 100, 100 )
@@ -12,8 +14,10 @@ __meta__ = {
 }
 
 [node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 3 )
 
 [node name="ColorRect" type="ColorRect" parent="Sprite"]
+visible = false
 margin_left = -100.0
 margin_top = -100.0
 margin_right = 100.0
@@ -22,6 +26,9 @@ color = Color( 0.611765, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Sprite" type="Sprite" parent="Sprite"]
+texture = ExtResource( 2 )
 
 [node name="Body" type="KinematicBody2D" parent="."]
 collision_mask = 6
