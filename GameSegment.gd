@@ -11,7 +11,6 @@ var lane_pos_x := [0.0, 0.0]
 var player_spawn_pos: Vector2
 var neutral_pos = size.y / 2 - 200
 
-# For spawning blocks V V V
 var block = []
 var block_distance = [300.0, 500]
 var block_length = [200.0, 512.0]
@@ -23,11 +22,16 @@ export var block_speed_max := 1500.0
 export var block_speed_inc := 0.01
 var block_speed := 0.0
 
+var touch_index := -1
+
 func _enter_tree():
 	calculate_lane_pos_x()
 	player_spawn_pos = Vector2(lane_pos_x[0], neutral_pos)
 	
 	reset()
+
+func _input(event):
+	touch_input(event)
 
 
 func _physics_process(delta: float):
@@ -131,7 +135,7 @@ func player_lane_changing(delta: float):
 	# Set x speed
 	if $Player.get_flag("slowed"):
 		var weight: float = ($Player.get_position().x - lane_pos_x[$Player.target_lane]) / ($Player.hit_pos - lane_pos_x[$Player.target_lane])
-		$Player.speed.x = lerp($Player.speed_x_slow, 10.0, weight)
+		$Player.speed.x = lerp($Player.speed_x_slow, 0.0, weight)
 		$Player/Sprite/Sprite.modulate = Color(1, 1, 1, weight) # temporary here
 	else:
 		$Player.speed.x = $Player.speed_x_fast
@@ -179,6 +183,24 @@ func blocks_deletion():
 func check_game_over():
 	if is_out_bottom($Player.get_top_pos()):
 		emit_signal("game_over")
+
+
+func touch_input(event):
+	if event is InputEventScreenTouch:
+		# Checks if starting position of the touch is on correct side of the screen and save the index of touch
+		if event.pressed and event.position.x > self.global_position.x and event.position.x < self.global_position.x + size.x and \
+				event.position.y > self.global_position.y and event.position.y < self.global_position.y + size.y:
+			touch_index = event.index
+		if !event.pressed and event.index == touch_index:
+			touch_index = -1
+	
+	if event is InputEventScreenDrag and event.index == touch_index:
+		if event.relative.x > 0:
+			Input.action_press(input.right)
+			touch_index = -1
+		elif event.relative.x < 0:
+			Input.action_press(input.left)
+			touch_index = -1
 
 
 func is_out_bottom(object_pos_y) -> bool:
