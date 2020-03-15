@@ -1,5 +1,6 @@
 extends Node2D
 
+
 export (PackedScene) var Block
 
 signal game_over
@@ -12,7 +13,7 @@ var player_spawn_pos: Vector2
 var neutral_pos = size.y / 2 - 200
 
 var block = []
-var block_distance = [300.0, 500]
+var block_distance = [300.0, 500.0]
 var block_length = [200.0, 512.0]
 var last_block :int
 var spawn_path = 0 # 0-1
@@ -22,12 +23,15 @@ export var block_speed_max := 1500.0
 export var block_speed_inc := 0.01
 var block_speed := 0.0
 
+export var bot_enabled := false
+var player_passed_block := true
+
 var touch_index := -1
 
 func _enter_tree():
 	calculate_lane_pos_x()
 	player_spawn_pos = Vector2(lane_pos_x[0], neutral_pos)
-	
+	$Player/Body/RayCast2D.enabled = bot_enabled
 	reset()
 
 func _input(event):
@@ -49,10 +53,14 @@ func _physics_process(delta: float):
 		# Fixes the problem with collision detection when two objects move to each other in the same frame using move_and_collide
 		collision_fix()
 		
+		if bot_enabled and !$Player.get_flag("changing_lane"):
+			dumb_bot()
+		
+		if !$Player.get_flag("changing_lane"):
+			player_input()
+		
 		if $Player.get_flag("changing_lane"):
 			player_lane_changing(delta)
-		else:
-			player_input()
 		
 		difficulty_scaling(delta)
 		
@@ -135,7 +143,7 @@ func player_lane_changing(delta: float):
 	# Set x speed
 	if $Player.get_flag("slowed"):
 		var weight: float = ($Player.get_position().x - lane_pos_x[$Player.target_lane]) / ($Player.hit_pos - lane_pos_x[$Player.target_lane])
-		$Player.speed.x = lerp($Player.speed_x_slow, 0.0, weight)
+		$Player.speed.x = lerp($Player.speed_x_slow, 0.5, weight)
 		$Player/Sprite/Sprite.modulate = Color(1, 1, 1, weight) # temporary here
 	else:
 		$Player.speed.x = $Player.speed_x_fast
@@ -149,7 +157,9 @@ func player_lane_changing(delta: float):
 		
 		$Player/Body.position += -collision.remainder
 		$Player.set_direction(-$Player.get_direction())
-	
+		
+		player_passed_block = true
+		
 	# Check if player is moving to other lane, not a wall, and stop player when reach correct pos
 	var pt_lane :int = $Player.target_lane
 	if pt_lane >= 0 and pt_lane < lane_pos_x.size():
@@ -230,3 +240,30 @@ func reset():
 	$Player.target_lane = 0
 	$Player.set_direction(0)
 	$Player.set_position(player_spawn_pos)
+	
+	player_passed_block = true
+
+
+# Very simple bot based on casting a ray with small random offset and checking if doesn't hit a block
+var offset := rand_range(-10.0, 50.0)
+func dumb_bot():
+	var cast_dir: int
+	if $Player.target_lane == 0:
+		cast_dir = 1
+	elif $Player.target_lane == 1:
+		cast_dir = -1
+	
+	$Player/Body/RayCast2D.set_position(Vector2(0, offset))
+	$Player/Body/RayCast2D.set_cast_to(Vector2(cast_dir * 150.0, 0))
+	$Player/Body/RayCast2D.force_raycast_update()
+	
+	if $Player/Body/RayCast2D.is_colliding():
+		player_passed_block = true
+	elif player_passed_block:
+		if cast_dir == 1:
+			Input.action_press(input.right)
+		else:
+			Input.action_press(input.left)
+		offset = rand_range(-15.0, 60.0)
+		
+		player_passed_block = false

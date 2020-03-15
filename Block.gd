@@ -13,7 +13,6 @@ func _physics_process(delta):
 	$Sprite.position = $Body.position #TODO
 
 
-
 func set_length(new_lenght: float):
 	_length = new_lenght
 	$Body/CollisionShape2D.shape = RectangleShape2D.new() # needed because shape is a separate object and changing shape.extents in one object would change it in others
