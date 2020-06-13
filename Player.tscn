@@ -5,7 +5,7 @@
 [ext_resource path="res://player.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 100, 100 )
+extents = Vector2( 50, 50 )
 
 [node name="Player" type="Node2D"]
 script = ExtResource( 1 )
@@ -32,10 +32,17 @@ texture = ExtResource( 2 )
 
 [node name="Body" type="KinematicBody2D" parent="."]
 collision_mask = 6
+collision/safe_margin = 0.001
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
 shape = SubResource( 1 )
 
 [node name="RayCast2D" type="RayCast2D" parent="Body"]
 cast_to = Vector2( -150, 0 )
+collision_mask = 2
+
+[node name="RayToBlock" type="RayCast2D" parent="Body"]
+position = Vector2( 0, 50 )
+enabled = true
+cast_to = Vector2( -300, 0 )
 collision_mask = 2

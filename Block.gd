@@ -1,5 +1,6 @@
 extends Node2D
 
+const WIDTH = 256.0
 
 var _length: float setget set_length, get_length
 var rect: Rect2
@@ -16,7 +17,7 @@ func _physics_process(delta):
 func set_length(new_lenght: float):
 	_length = new_lenght
 	$Body/CollisionShape2D.shape = RectangleShape2D.new() # needed because shape is a separate object and changing shape.extents in one object would change it in others
-	$Body/CollisionShape2D.shape.extents = Vector2(128, _length / 2)
+	$Body/CollisionShape2D.shape.extents = Vector2(WIDTH / 2, _length / 2)
 	$Sprite/ColorRect.rect_size.y = _length
 	$Sprite/ColorRect.rect_position.y = -_length / 2
 

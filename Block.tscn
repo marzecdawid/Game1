@@ -25,6 +25,7 @@ __meta__ = {
 
 [node name="Body" type="KinematicBody2D" parent="."]
 collision_layer = 2
+collision/safe_margin = 0.001
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
 shape = SubResource( 1 )

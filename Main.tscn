@@ -10,17 +10,20 @@ script = ExtResource( 2 )
 position = Vector2( 16, 0 )
 input = {
 "left": "leftsegment_left",
-"right": "leftsegment_right"
+"right": "leftsegment_right",
+"up": "leftsegment_up"
 }
 
 [node name="RightSegment" parent="." instance=ExtResource( 1 )]
 position = Vector2( 552, 0 )
 input = {
 "left": "rightsegment_left",
-"right": "rightsegment_right"
+"right": "rightsegment_right",
+"up": "rightsegment_up"
 }
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 margin_top = 1600.0
 margin_right = 1080.0
 margin_bottom = 1920.0

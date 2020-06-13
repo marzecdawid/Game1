@@ -16,20 +16,23 @@ script = ExtResource( 3 )
 Block = ExtResource( 1 )
 input = {
 "left": "rightsegment_left",
-"right": "rightsegment_right"
+"right": "rightsegment_right",
+"up": "rightsegment_up"
 }
 
 [node name="Background" type="Sprite" parent="."]
+centered = false
 
 [node name="ColorRect" type="ColorRect" parent="Background"]
 margin_right = 512.0
-margin_bottom = 1600.0
+margin_bottom = 1920.0
 color = Color( 0.278431, 0.278431, 0.278431, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
+z_index = 1
 _size = Vector2( 100, 100 )
 
 [node name="LeftWall" type="StaticBody2D" parent="."]
